@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hana Cold Drink Orders</title>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f7fb;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+}
+.container {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 420px;
+}
+h2 { text-align: center; margin-bottom: 20px; color: #333; }
+label { font-weight: 600; margin-top: 10px; display: block; }
+input, select, button {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+.line-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 5px;
+  margin-top: 10px;
+}
+.add-btn, .remove-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.remove-btn { background: #dc3545; }
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.3s;
+  width: 100%;
+  padding: 10px;
+}
+button[type="submit"]:hover { background-color: #0056b3; }
+.success, .error {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 500;
+}
+.success { color: green; }
+.error { color: red; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>AAA Enterprises</h1>
+<h2>Hana Cold Drink Order</h2>
+<form id="orderForm">
+  <label>Order By</label>
+  <input type="text" id="orderBy" >
+
+  <label>Shop Name</label>
+  <input type="text" id="shopName" required>
+
+  <label>Address</label>
+  <input type="text" id="address" required>
+
+  <label>Mobile No</label>
+  <input type="tel" id="mobile" pattern="[0-9]{10}" placeholder="10-digit number" required>
+
+  <label>Order Items</label>
+  <div id="itemsContainer"></div>
+
+  <button type="button" class="add-btn" id="addRow">+ Add another item</button>
+  <button type="submit">Submit Order</button>
+</form>
+<div id="message"></div>
+</div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbx0yg-PFcWnOSCf7tWNcgSl6XX0CCqR6gDh0eg87aGioHkUD5TKs8IaGpqW5Qy991Ma/exec"; // Replace with your deployed Apps Script URL
+
+let flavours = [];
+let sizes = [];
+
+async function loadOptions() {
+  try {
+    const res = await fetch(scriptURL);
+    const data = await res.json();
+    flavours = data.flavours;
+    sizes = data.sizes;
+
+    addRow(); // Add first order row
+
+    document.getElementById("addRow").addEventListener("click", addRow);
+
+  } catch (err) {
+    console.error("Error fetching options:", err);
+    document.getElementById("message").textContent = "Error loading flavours/sizes";
+    document.getElementById("message").className = "error";
+  }
+}
+
+function addRow() {
+  const container = document.getElementById("itemsContainer");
+  const newRow = document.createElement("div");
+  newRow.className = "line-item";
+
+  let flavourOpts = `<option value="">Flavour</option>`;
+  flavours.forEach(f => flavourOpts += `<option value="${f}">${f}</option>`);
+
+  let sizeOpts = `<option value="">Size</option>`;
+  sizes.forEach(s => sizeOpts += `<option value="${s}">${s}</option>`);
+
+  newRow.innerHTML = `
+    <select class="flavour" required>${flavourOpts}</select>
+    <select class="size" required>${sizeOpts}</select>
+    <input type="number" class="quantity" placeholder="Qty" required>
+    <select class="unit" required>
+      <option value="">Unit</option>
+      <option value="Bottle">Bottle</option>
+      <option value="Crate">Crate</option>
+    </select>
+  `;
+
+  container.appendChild(newRow);
+}
+
+document.getElementById("orderForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const orders = [];
+  document.querySelectorAll(".line-item").forEach(row => {
+    orders.push({
+      flavour: row.querySelector(".flavour").value,
+      size: row.querySelector(".size").value,
+      quantity: row.querySelector(".quantity").value,
+      unit: row.querySelector(".unit").value
+    });
+  });
+
+  const payload = {
+    orderBy: document.getElementById("orderBy").value,
+    shopName: document.getElementById("shopName").value,
+    address: document.getElementById("address").value,
+    mobile: document.getElementById("mobile").value,
+    orders
+  };
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(res => {
+    const msg = document.getElementById("message");
+    if (res.status === "success") {
+      msg.textContent = res.message || "Order submitted!";
+      msg.className = "success";
+      document.getElementById("orderForm").reset();
+      document.getElementById("itemsContainer").innerHTML = "";
+      addRow();
+    } else {
+      msg.textContent = "Error: " + (res.message || "Something went wrong");
+      msg.className = "error";
+    }
+  })
+  .catch(err => {
+    const msg = document.getElementById("message");
+    msg.textContent = "Error: " + err;
+    msg.className = "error";
+  });
+});
+
+// Load dropdowns when page loads
+window.onload = loadOptions;
+</script>
+</body>
+</html>
