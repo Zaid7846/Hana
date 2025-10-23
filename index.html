@@ -5,13 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hana Cold Drink Orders</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f6f8; }
+    body { font-family: Arial, sans-serif; padding: 20px; display: flex; background: #f4f6f8; justify-content: center; }
+    .container {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 520px;}
     h2 { color: #2b6777; }
     form { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    input, select, button { padding: 8px; margin: 6px 0; border-radius: 5px; border: 1px solid #ccc; }
+    input, select, button { padding: 8px; margin: 6px 0; border-radius: 10px; border: 1px solid #ccc; }
     button { cursor: pointer; }
     .order-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .delete-btn { background-color: #f44336; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+    .delete-btn { background-color: #ffffff; color: rgb(209, 147, 147); border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
     .delete-btn:hover { background-color: #d32f2f; }
     .add-btn { background-color: #2196F3; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
     .add-btn:hover { background-color: #1976D2; }
@@ -20,10 +26,12 @@
   </style>
 </head>
 <body>
-  <h2>Hana Cold Drink Order Form</h2>
+  <div class="container">
+    <h1>AAA Enterprises</h1>
+  <h2>Hana Cold Drink Order</h2>
   <form id="orderForm">
     <label>Order By:</label><br>
-    <input type="text" id="orderBy" required><br>
+    <input type="text" id="orderBy" ><br>
     
     <label>Shop Name:</label><br>
     <input type="text" id="shopName" required><br>
@@ -32,7 +40,7 @@
     <input type="text" id="address" required><br>
     
     <label>Mobile No:</label><br>
-    <input type="text" id="mobile" required><br><br>
+    <input type="text" id="mobile"  pattern="[0-9]{10}" placeholder="10-digit number"  required><br><br>
 
     <h3>Order List</h3>
     <div id="orderList"></div>
@@ -40,107 +48,7 @@
 
     <button type="submit" class="submit-btn">Submit Order</button>
   </form>
-
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx0yg-PFcWnOSCf7tWNcgSl6XX0CCqR6gDh0eg87aGioHkUD5TKs8IaGpqW5Qy991Ma/exec";
-    let flavourOptions = [];
-    let sizeOptions = [];
-
-    // Fetch flavour and size data from Google Sheet
-    fetch(scriptURL)
-      .then(res => res.json())
-      .then(data => {
-        flavourOptions = data.flavours;
-        sizeOptions = data.sizes;
-        addOrderRow(); // start with one row
-      })
-      .catch(err => console.error('Error loading data:', err));
-
-    function addOrderRow() {
-      const container = document.getElementById("orderList");
-      const row = document.createElement("div");
-      row.classList.add("order-row");
-
-      const flavourSelect = document.createElement("select");
-      flavourOptions.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f; opt.textContent = f;
-        flavourSelect.appendChild(opt);
-      });
-
-      const sizeSelect = document.createElement("select");
-      sizeOptions.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s; opt.textContent = s;
-        sizeSelect.appendChild(opt);
-      });
-
-      const qtyInput = document.createElement("input");
-      qtyInput.type = "number";
-      qtyInput.placeholder = "Qty";
-      qtyInput.min = 1;
-      qtyInput.required = true;
-
-      const unitSelect = document.createElement("select");
-      ["Bottle", "Crate"].forEach(u => {
-        const opt = document.createElement("option");
-        opt.value = u;
-        opt.textContent = u;
-        unitSelect.appendChild(opt);
-      });
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "❌";
-      deleteBtn.className = "delete-btn";
-      deleteBtn.onclick = () => container.removeChild(row);
-
-      row.appendChild(flavourSelect);
-      row.appendChild(sizeSelect);
-      row.appendChild(qtyInput);
-      row.appendChild(unitSelect);
-      row.appendChild(deleteBtn);
-
-      container.appendChild(row);
-    }
-
-    document.getElementById("orderForm").addEventListener("submit", e => {
-      e.preventDefault();
-
-      const orders = [];
-      document.querySelectorAll(".order-row").forEach(row => {
-        const [flavour, size, qty, unit] = row.querySelectorAll("select, input");
-        orders.push({
-          flavour: flavour.value,
-          size: size.value,
-          quantity: qty.value,
-          unit: unit.value
-        });
-      });
-
-      const payload = {
-        orderBy: document.getElementById("orderBy").value,
-        shopName: document.getElementById("shopName").value,
-        address: document.getElementById("address").value,
-        mobile: document.getElementById("mobile").value,
-        orders
-      };
-
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(() => {
-        alert("Order submitted successfully!");
-        document.getElementById("orderForm").reset();
-        document.getElementById("orderList").innerHTML = "";
-        addOrderRow();
-      })
-      .catch(err => {
-        console.error("Error submitting:", err);
-        alert("Error submitting order");
-      });
-    });
-  </script>
+</div>
+  <script src="script.js"></script>
 </body>
 </html>
