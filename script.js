@@ -87,11 +87,47 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx0yg-PFcWnOSCf7tWNcg
       })
       .then(res => res.json())
       .then(() => {
+    alert("Order submitted successfully!");
+
+    let customerNumber = document.getElementById("mobile").value.replace(/\D/g,''); // remove non-digits
+    let orderBy = document.getElementById("orderBy").value;
+    let shopName = document.getElementById("shopName").value;
+    let address = document.getElementById("address").value;
+
+    let message = `*Hana Cold Drinks* — Order Confirmation\n`;
+    message += `Order By: ${orderBy}\n`;
+    message += `Shop: ${shopName}\n`;
+    message += `Address: ${address}\n`;
+    message += `Mobile: ${customerNumber}\n\n`;
+
+    document.querySelectorAll(".order-row").forEach((row, i) => {
+        const [flavour, size, qty, unit] = row.querySelectorAll("select, input");
+        message += `${i+1}. ${flavour.value} — ${size.value} — ${qty.value} ${unit.value}\n`;
+    });
+
+    message += `\nThank you for your order!`;
+
+    let encodedMessage = encodeURIComponent(message);
+
+    // Check if number seems valid for WhatsApp (simple check: length 10–13 digits)
+    if(customerNumber.length >= 10 && customerNumber.length <= 13) {
+        // Redirect to WhatsApp
+        window.location.href = `https://wa.me/91${customerNumber}?text=${encodedMessage}`;
+    } else {
+        alert("Order saved! Customer number may not be valid for WhatsApp, so no message was sent.");
+    }
+
+    // Reset form & order list
+    document.getElementById("orderForm").reset();
+    document.getElementById("orderList").innerHTML = "";
+    addOrderRow();
+})
+      /*.then(() => {
         alert("Order submitted successfully!");
         document.getElementById("orderForm").reset();
         document.getElementById("orderList").innerHTML = "";
         addOrderRow();
-      })
+      })*/
       .catch(err => {
         console.error("Error submitting:", err);
         alert("Error submitting order");
