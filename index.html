@@ -5,17 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hana Cold Drink Orders</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; display: flex; background: #f4f6f8; justify-content: center; }
+    
+    body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  display: flex;
+  background: #f4f6f8;
+  justify-content: center;
+  align-items: flex-start; /* Changed to flex-start to prevent vertical centering on small screens if content overflows */
+  min-height: 100vh; /* Ensure body takes full viewport height */
+}
+
+.container {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 480px; /* Default width for larger screens */
+  max-width: 100%; /* Ensures it doesn't exceed 100% of its parent's width */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Media query for screens smaller than 600px (typical mobile portrait) */
+@media (max-width: 600px) {
+  body {
+    padding: 10px; /* Reduce body padding on smaller screens */
+  }
+
+  .container {
+    width: 100%; /* Make container take full width of its parent */
+    padding: 15px 20px; /* Adjust padding for smaller screens */
+    margin: 0 10px; /* Add some horizontal margin to prevent touching edges */
+  }
+}
+
+/* Optional: Media query for screens between 601px and 768px (typical tablet portrait) */
+@media (min-width: 601px) and (max-width: 768px) {
+  .container {
+    width: 90%; /* Use a percentage width for tablets */
+    padding: 20px 25px;
+  }
+}
+    
+    /*body { font-family: Arial, sans-serif; padding: 20px; display: flex; background: #f4f6f8; justify-content: center; }
     .container {
   background: white;
   padding: 25px 30px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  width: 520px;}
+  width: 480px;}*/
     h2 { color: #2b6777; }
     form { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     input, select, button { padding: 8px; margin: 6px 0; border-radius: 10px; border: 1px solid #ccc; }
     button { cursor: pointer; }
+    .order-list-wrapper { width: 100%; overflow-x: auto;}
     .order-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .delete-btn { background-color: #ffffff; color: rgb(209, 147, 147); border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
     .delete-btn:hover { background-color: #d32f2f; }
@@ -27,7 +70,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>AAA Enterprises</h1>
+  <h1>AAA Enterprises</h1>
   <h2>Hana Cold Drink Order</h2>
   <form id="orderForm">
     <label>Order By:</label><br>
@@ -43,12 +86,17 @@
     <input type="text" id="mobile"  pattern="[0-9]{10}" placeholder="10-digit number"  required><br><br>
 
     <h3>Order List</h3>
-    <div id="orderList"></div>
+    <div class="order-list-wrapper">
+        <div id="orderList"></div>
+    </div>
+    
     <button type="button" class="add-btn" onclick="addOrderRow()">+ Add Order</button><br><br>
 
     <button type="submit" class="submit-btn">Submit Order</button>
   </form>
 </div>
-  <script src="script.js"></script>
+  <script src="script.js">
+    
+  </script>
 </body>
 </html>
