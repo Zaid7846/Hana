@@ -56,10 +56,12 @@
   width: 480px;}*/
     h2 { color: #2b6777; }
     form { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    input, select, button { padding: 8px; margin: 6px 0; border-radius: 10px; border: 1px solid #ccc; }
+    input, button { padding: 8px; margin: 6px 0; border-radius: 10px; border: 1px solid #ccc; }
     button { cursor: pointer; }
     .order-list-wrapper { width: 100%; overflow-x: auto;}
     .order-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .order-row input[type = "number"]{ width: 70px; padding: 4px; text-align: center;}
+    .order-row select.unit { width: 50px; margin-left: 6px;}
     .delete-btn { background-color: #ffffff; color: rgb(209, 147, 147); border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
     .delete-btn:hover { background-color: #d32f2f; }
     .add-btn { background-color: #2196F3; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
@@ -73,6 +75,8 @@
   <h1>AAA Enterprises</h1>
   <h2>Hana Cold Drink Order</h2>
   <form id="orderForm">
+
+
     <label>Order By:</label><br>
     <input type="text" id="orderBy" ><br>
     
@@ -83,7 +87,7 @@
     <input type="text" id="address" required><br>
     
     <label>Mobile No:</label><br>
-    <input type="text" id="mobile"  pattern="[0-9]{10}" placeholder="10-digit number"  required><br><br>
+    <input type="text" id="mobile"  pattern="[0-9]{10}" placeholder="10-digit number" ><br><br>
 
     <h3>Order List</h3>
     <div class="order-list-wrapper">
