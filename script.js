@@ -1,4 +1,5 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx0yg-PFcWnOSCf7tWNcgSl6XX0CCqR6gDh0eg87aGioHkUD5TKs8IaGpqW5Qy991Ma/exec";
+
     let flavourOptions = [];
     let sizeOptions = [];
 
@@ -86,8 +87,16 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx0yg-PFcWnOSCf7tWNcg
         body: JSON.stringify(payload)
       })
       .then(res => res.json())
-      .then(() => {
-    alert("Order submitted successfully!");
+      .then( data => {
+
+        if( data.result === "success"){
+            alert(`Order submitted successfully! Your Order no is ${data.orderNo}`); //Order No Implemented
+           // document.getElementById("orderNo").value = data.orderNo; //Order No Implemented
+        }
+        else{
+          alert("Order Submission failed. Please try again.")
+        }
+            
 
     let customerNumber = document.getElementById("mobile").value.replace(/\D/g,''); // remove non-digits
     let orderBy = document.getElementById("orderBy").value;
